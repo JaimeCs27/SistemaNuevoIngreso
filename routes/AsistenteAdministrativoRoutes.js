@@ -158,7 +158,7 @@ router.post("/DarDeBaja", async (req, res) => {
     "profesor.campus": req.body.campus,
   });
   console.log(prof)
-  const profe = await user.findByIdAndUpdate(prof._id, {
+  const profe = await user.findByIdAndUpdate(prof.profesor.id, {
     $set: { isCoord: false },
   }, {new: true});
   console.log(profe)
