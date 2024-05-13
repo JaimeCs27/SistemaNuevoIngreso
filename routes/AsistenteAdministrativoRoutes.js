@@ -157,10 +157,10 @@ router.post("/DarDeBaja", async (req, res) => {
   const prof = await team.findOneAndDelete({
     "profesor.campus": req.body.campus,
   });
-  prof = await user.findByIdAndUpdate(prof._id, {
+  const profe = await user.findByIdAndUpdate(prof._id, {
     $set: { isCoord: false },
   });
-  if (prof) {
+  if (profe) {
     res.send("Success");
   } else {
     res.send("Not deleted");
