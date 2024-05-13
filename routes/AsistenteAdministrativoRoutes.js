@@ -15,7 +15,7 @@ router.get("/ListaEstudiantes/:campus", async (req, res) => {
   console.log(campus);
   try {
     const result = await student.find();
-    if (campus !== "") {
+    if (campus !== "Todos") {
       const result = await student.find({ campus: campus });
     }
     res.send(result);
