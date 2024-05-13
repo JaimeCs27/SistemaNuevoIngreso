@@ -96,7 +96,7 @@ router.post("/login", (req, res) => {
         
       } else {
         console.log("no son iguales las contrasenas");
-        res.json({ message: "Contraseña Incorrecta" });
+        res.json({status: false, message: "Contraseña Incorrecta" });
       }
     } else {
       res.json({ message: "Usuario no encontrado" });

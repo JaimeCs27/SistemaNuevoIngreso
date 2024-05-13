@@ -192,7 +192,7 @@ router.post("/AgregarProfesor", async (req, res) => {
       $set : {sancarlos: number+1}
     })
     acronim = "SC-"
-  } else if(req.body.campus === "San José"){
+  } else if(req.body.campus === "San Jose"){
     number = listOfConsecutive[0].sanjose
     await consecutive.findOneAndUpdate({}, {
       $set : {sanjose: number+1}
