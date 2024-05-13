@@ -4,32 +4,33 @@ import { team } from "../models/teamModel.js";
 import { consecutive } from "../models/consecutiveModel.js";
 import { student } from "../models/studentModel.js";
 
-
 const router = express.Router();
 
 router.get("/", (req, res) => {
   return res.status(200);
 });
 
-router.get('/ListaEstudiantes/:campus', async (req,res) =>{
-  const campus = req.params.campus
-  console.log(campus)
-try {
-  const result = await student.find({campus: campus})
-  res.send(result)
-} catch (error) {
-  console.log(error)
-}
-  
-})
+router.get("/ListaEstudiantes/:campus", async (req, res) => {
+  const campus = req.params.campus;
+  console.log(campus);
+  try {
+    const result = await student.find();
+    if (campus !== "") {
+      const result = await student.find({ campus: campus });
+    }
+    res.send(result);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 router.post("/subirArchivo", (req, res) => {
-  const data = req.body.data
-  console.log(data)
-  try{
+  const data = req.body.data;
+  console.log(data);
+  try {
     data.forEach(async (element) => {
-      const studentFind = await student.find({carne: element.Carne})
-      if(!studentFind.length){
+      const studentFind = await student.find({ carne: element.Carne });
+      if (!studentFind.length) {
         await student.create({
           carne: element.Carne,
           name: element.Nombre,
@@ -38,39 +39,37 @@ router.post("/subirArchivo", (req, res) => {
           secondLastName: element.SegundoApellido,
           email: element.Correo,
           phoneNumber: element.Telefono,
-          campus: element.Campus
-        })
+          campus: element.Campus,
+        });
       }
     });
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
   }
 });
 
-router.get('/VerDetallesEstudiante/:id', async (req, res) =>{
-  const id = req.params.id
+router.get("/VerDetallesEstudiante/:id", async (req, res) => {
+  const id = req.params.id;
   try {
-    const result = await student.findById(id)
-    if(!result)
-      return res.send({status: "User Not Found"})
-    else
-      res.send(result)
+    const result = await student.findById(id);
+    if (!result) return res.send({ status: "User Not Found" });
+    else res.send(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-})
+});
 
 router.get("/VerDetalles/:id", async (req, res) => {
-  const param = req.params.id
-  let profe = {}
+  const param = req.params.id;
+  let profe = {};
   try {
-    profe = await user.findById(param)
+    profe = await user.findById(param);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-  
-  res.send(profe)
-})
+
+  res.send(profe);
+});
 
 router.get("/ListaProfesores", async (req, res) => {
   const users = await user.find({
@@ -158,9 +157,13 @@ router.post("/DarDeBaja", async (req, res) => {
     "profesor.campus": req.body.campus,
   });
 
-  const profe = await user.findByIdAndUpdate(prof.profesor.id, {
-    $set: { isCoord: false },
-  }, {new: true});
+  const profe = await user.findByIdAndUpdate(
+    prof.profesor.id,
+    {
+      $set: { isCoord: false },
+    },
+    { new: true }
+  );
 
   if (profe) {
     res.send("Success");
@@ -170,41 +173,55 @@ router.post("/DarDeBaja", async (req, res) => {
 });
 
 router.post("/AgregarProfesor", async (req, res) => {
-  const listOfConsecutive = await consecutive.find({})
-  let number = 0
-  let acronim
-  if(req.body.campus === "Cartago"){
-    number = listOfConsecutive[0].cartago
-   await consecutive.findOneAndUpdate({}, {
-      $set : {cartago: number+1}
-    })
-    acronim = "CA-"
-  } else if(req.body.campus === "Limon"){
-    number = listOfConsecutive[0].limon
-    await consecutive.findOneAndUpdate({}, {
-      $set : {limon: number+1}
-    })
-    acronim = "LI-"
-  } else if(req.body.campus === "Alajuela"){
-    number = listOfConsecutive[0].alajuela
-    await consecutive.findOneAndUpdate({}, {
-      $set : {alajuela: number+1}
-    })
-    acronim = "AL-"
-  } else if(req.body.campus === "San Carlos"){
-    number = listOfConsecutive[0].sancarlos
-    await consecutive.findOneAndUpdate({}, {
-      $set : {sancarlos: number+1}
-    })
-    acronim = "SC-"
-  } else if(req.body.campus === "San Jose"){
-    number = listOfConsecutive[0].sanjose
-    await consecutive.findOneAndUpdate({}, {
-      $set : {sanjose: number+1}
-    })
-    acronim = "SJ-"
+  const listOfConsecutive = await consecutive.find({});
+  let number = 0;
+  let acronim;
+  if (req.body.campus === "Cartago") {
+    number = listOfConsecutive[0].cartago;
+    await consecutive.findOneAndUpdate(
+      {},
+      {
+        $set: { cartago: number + 1 },
+      }
+    );
+    acronim = "CA-";
+  } else if (req.body.campus === "Limon") {
+    number = listOfConsecutive[0].limon;
+    await consecutive.findOneAndUpdate(
+      {},
+      {
+        $set: { limon: number + 1 },
+      }
+    );
+    acronim = "LI-";
+  } else if (req.body.campus === "Alajuela") {
+    number = listOfConsecutive[0].alajuela;
+    await consecutive.findOneAndUpdate(
+      {},
+      {
+        $set: { alajuela: number + 1 },
+      }
+    );
+    acronim = "AL-";
+  } else if (req.body.campus === "San Carlos") {
+    number = listOfConsecutive[0].sancarlos;
+    await consecutive.findOneAndUpdate(
+      {},
+      {
+        $set: { sancarlos: number + 1 },
+      }
+    );
+    acronim = "SC-";
+  } else if (req.body.campus === "San Jose") {
+    number = listOfConsecutive[0].sanjose;
+    await consecutive.findOneAndUpdate(
+      {},
+      {
+        $set: { sanjose: number + 1 },
+      }
+    );
+    acronim = "SJ-";
   }
-  
 
   const newUser = {
     username: req.body.email,
@@ -229,49 +246,55 @@ router.post("/AgregarProfesor", async (req, res) => {
   }
 });
 
-router.post("/EditarEstudiante/:id", async (req, res) => {  
-  const id = req.params.id
-  console.log(id)
-  try{
-    const result = await student.findByIdAndUpdate(id,{
-      $set : {
-        name: req.body.name,
-        secondName: req.body.secondName,
-        lastName: req.body.lastName,
-        secondLastName: req.body.secondLastName,
-        username: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-      }
-    }, {new: true})
-    console.log(result)
-    res.send(result)
-  }catch (error) {
-    res.send({ status: "error" });
-  }
-})
-
-router.post("/EditarProfesor/:Profesor", async (req, res) => {
-  const Id = req.params.Profesor;
-  try { 
-    const result = await user.findByIdAndUpdate(Id, {
-      $set: {
-        name: req.body.name,
-        secondName: req.body.secondName,
-        lastName: req.body.lastName,
-        secondLastName: req.body.secondLastName,
-        username: req.body.email,
-        officePhone: req.body.officePhone,
-        phoneNumber: req.body.phoneNumber,
-        profilePic: req.body.profilePic
-      }
-    }, {new: true});
-    console.log(result)
+router.post("/EditarEstudiante/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  try {
+    const result = await student.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name: req.body.name,
+          secondName: req.body.secondName,
+          lastName: req.body.lastName,
+          secondLastName: req.body.secondLastName,
+          username: req.body.email,
+          phoneNumber: req.body.phoneNumber,
+        },
+      },
+      { new: true }
+    );
+    console.log(result);
     res.send(result);
   } catch (error) {
     res.send({ status: "error" });
   }
 });
 
-
+router.post("/EditarProfesor/:Profesor", async (req, res) => {
+  const Id = req.params.Profesor;
+  try {
+    const result = await user.findByIdAndUpdate(
+      Id,
+      {
+        $set: {
+          name: req.body.name,
+          secondName: req.body.secondName,
+          lastName: req.body.lastName,
+          secondLastName: req.body.secondLastName,
+          username: req.body.email,
+          officePhone: req.body.officePhone,
+          phoneNumber: req.body.phoneNumber,
+          profilePic: req.body.profilePic,
+        },
+      },
+      { new: true }
+    );
+    console.log(result);
+    res.send(result);
+  } catch (error) {
+    res.send({ status: "error" });
+  }
+});
 
 export default router;
