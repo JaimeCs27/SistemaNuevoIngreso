@@ -53,7 +53,7 @@ router.post('/RestorePassword', async (req, res) =>{
       from: 'poogr40@gmail.com',
       to: email,
       subject: 'Password recovery - Sistema Nuevos Ingresos',
-      text: `Por favor ingrese al siguiente link para restaurar tu contraseña: \n http://tecportfolio.onrender.com/RestorePassword/${user._id}`
+      text: `Por favor ingrese al siguiente link para restaurar tu contraseña: \n https://tecportfolio.onrender.com/RestorePassword/${user._id}`
     };
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
