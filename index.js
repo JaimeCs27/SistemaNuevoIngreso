@@ -9,6 +9,8 @@ import cors from "cors";
 
 const app = express();
 
+app.use(express.json({limit: '16mb'}))
+
 app.use(express.json());
 
 //Middleware for handling CORS Policy
