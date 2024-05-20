@@ -153,6 +153,99 @@ router.get("/ListaProfesores/:Profesor", async (req, res) => {
     }
   })
 
+router.get('/generarInformeCampus/:Campus', async (req, res) => {
+    try {
+        const nombreCampus = req.params.Campus;
+        const students = await student.find({ campus: nombreCampus}).sort('campus');
+        const workbook = new ExcelJS.Workbook();
+
+        const worksheet = workbook.addWorksheet(nombreCampus);
+
+        worksheet.columns = [
+            { header: 'Carne', key: 'carne', width: 10 },
+            { header: 'Primer Nombre', key: 'name', width: 15 },
+            { header: 'Segundo Nombre', key: 'secondName', width: 15 },
+            { header: 'Primer Apellido', key: 'lastName', width: 15 },
+            { header: 'Segundo Apellido', key: 'secondLastName', width: 15 },
+            { header: 'Email', key: 'email', width: 25 },
+            { header: 'Numero de Telefono', key: 'phoneNumber', width: 25 },
+            { header: 'Campus', key: 'campus', width: 15 },
+        ];
+
+        worksheet.getRow(1).font = { bold: true };
+
+        students.forEach(student => {
+            worksheet.addRow([student.carne, student.name, student.secondName, student.lastName, student.secondLastName, student.email, 
+                student.phoneNumber, student.campus]);
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        res.setHeader('Content-Type', 'appplication/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
+        res.setHeader('Content-Disposition', 'attachment; filename="informeEstudiantes.xlsx"');
+        res.send(buffer);
+
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Failed to generate Excel file');
+        
+    }
+});
+
+router.get('/generarInformeAllCampus', async (req, res) => {
+    try {
+        const students = await student.find({}).sort('campus');
+
+        const campusGroups = students.reduce((acc, student) => {
+            if (!acc[student.campus]) {
+                acc[student.campus] = [];
+            }
+            acc[student.campus].push(student);
+            return acc;
+        }, {});
+
+        const workbook = new ExcelJS.Workbook();
+
+        for (let campus in campusGroups) {
+            const worksheet = workbook.addWorksheet(campus); 
+
+            worksheet.columns = [
+                { header: 'Carne', key: 'carne', width: 10 },
+                { header: 'Primer Nombre', key: 'name', width: 15 },
+                { header: 'Segundo Nombre', key: 'secondName', width: 15 },
+                { header: 'Primer Apellido', key: 'lastName', width: 15 },
+                { header: 'Segundo Apellido', key: 'secondLastName', width: 15 },
+                { header: 'Email', key: 'email', width: 25 },
+                { header: 'Numero de Telefono', key: 'phoneNumber', width: 25 },
+                { header: 'Campus', key: 'campus', width: 15 },
+            ];
+
+            worksheet.getRow(1).font = { bold: true };
+
+            campusGroups[campus].forEach(student => {
+                worksheet.addRow({
+                    carne: student.carne,
+                    name: student.name,
+                    secondName: student.secondName,
+                    lastName: student.lastName,
+                    secondLastName: student.secondLastName,
+                    email: student.email,
+                    phoneNumber: student.phoneNumber,
+                    campus: student.campus
+                });
+            });
+        }
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
+        res.setHeader('Content-Disposition', 'attachment; filename="informeEstudiantes.xlsx"');
+        res.send(buffer);
+    } catch (error) {
+        console.error('Failed to generate Excel file:', error);
+        res.status(500).send('Failed to generate Excel file');
+    }
+});
+
   router.get(`/Actividad/:id`, async (req,res) => {
     const id = req.params.id
     try {
