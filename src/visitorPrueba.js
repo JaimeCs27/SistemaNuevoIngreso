@@ -58,7 +58,7 @@ class ReminderVisitor {
                 console.log(dateRec)
                 console.log(this.systemDate)
                 if(dateRec.getTime() === this.systemDate.getTime())
-                    console.log(NotificationCenter.notifyObservers(activity, 'recordatorio'));
+                    NotificationCenter.notifyObservers(activity, 'recordatorio');
 
             })
         }
