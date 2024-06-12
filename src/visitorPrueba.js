@@ -47,11 +47,13 @@ class ReminderVisitor {
 
     visit(activity) {
         // Lógica para determinar si se debe generar un recordatorio
+        console.log("reminder")
         const reminderDate = new Date(activity.fecha);
         reminderDate.setDate(reminderDate.getDate() - 1); // Un día antes de la fecha de la actividad
         if (this.systemDate >= reminderDate) {
             // Llamar al centro de notificaciones
             activity.recordatorios.map((rec)=>{
+                console.log(rec)
                 const dateRec = new Date(rec)
                 if(dateRec === this.systemDate)
                     NotificationCenter.notifyObservers(activity, 'recordatorio');
