@@ -1,5 +1,5 @@
 // visitor.js
-import { Activity } from "../models/activityModel";
+import { Activity } from "../models/activityModel.js";
 
 class ActivityClass {
     constructor(data) {
