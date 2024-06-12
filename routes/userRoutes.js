@@ -6,7 +6,8 @@ import nodemailer from 'nodemailer'
 import { ActivityClass, PublishVisitor, ReminderVisitor } from '../src/visitorPrueba.js';
 import { NotificationCenter, Student } from '../src/observer.js'
 
-
+const notificationCenter = new NotificationCenter();
+global.NotificationCenter = notificationCenter
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -92,26 +93,31 @@ router.post('/restore/:id', async (req, res) => {
 
 router.post('/LoadData', async (req, res) =>{
   console.log("load data")
-  const systemDate = new Date(req.body.fecha)
-  const list = await Activity.find({})
-  list.map((act) => {
-    const activityData = {
-        _id: act._id,
-        nombre: act.nombre,
-        estado: act.estado,
-        semana: act.semana,
-        tipo: act.tipo,
-        afiche: act.afiche,
-        fecha: act.fecha,
-        hora: act.hora,
-        recordatorios: act.recordatorios,
-    };
-    const activity = new ActivityClass(activityData)
-    const publishVisitor = new PublishVisitor(systemDate);
-    const reminderVisitor = new ReminderVisitor(systemDate);
-    activity.accept(publishVisitor);
-    activity.accept(reminderVisitor);
-  })
+  try {
+    const systemDate = new Date(req.body.fecha)
+    const list = await Activity.find({})
+    list.map((act) => {
+      const activityData = {
+          _id: act._id,
+          nombre: act.nombre,
+          estado: act.estado,
+          semana: act.semana,
+          tipo: act.tipo,
+          afiche: act.afiche,
+          fecha: act.fecha,
+          hora: act.hora,
+          recordatorios: act.recordatorios,
+      };
+      const activity = new ActivityClass(activityData)
+      const publishVisitor = new PublishVisitor(systemDate);
+      const reminderVisitor = new ReminderVisitor(systemDate);
+      activity.accept(publishVisitor);
+      activity.accept(reminderVisitor);
+    })
+    
+  } catch (error) {
+    
+  }
   console.log("termino")
 })
 
