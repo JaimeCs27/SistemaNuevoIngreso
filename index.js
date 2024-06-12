@@ -6,7 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import AsistenteAdministrativoRoutes from "./routes/AsistenteAdministrativoRoutes.js";
 import ProfesorGuiaCoordinadorRoutes from "./routes/ProfesorGuiaCoordinadorRoutes.js";
 import cors from "cors";
-import { NotificationCenter, Student } from '../src/observer.js'
+import { NotificationCenter, Student } from './src/observer.js'
 
 const notificationCenter = new NotificationCenter();
 global.NotificationCenter = notificationCenter
