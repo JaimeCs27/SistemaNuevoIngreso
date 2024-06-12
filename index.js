@@ -15,13 +15,7 @@ app.use(express.json());
 
 //Middleware for handling CORS Policy
 app.use(cors());
-app.use(
-  session({
-    secret: "kjahsdkjahsdkashjd",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+
 
 app.get("/", (request, response) => {
   console.log(request);
