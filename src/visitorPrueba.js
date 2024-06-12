@@ -53,9 +53,11 @@ class ReminderVisitor {
         if (this.systemDate >= reminderDate) {
             // Llamar al centro de notificaciones
             activity.recordatorios.map((rec)=>{
-                console.log(rec)
+                
                 const dateRec = new Date(rec)
-                if(dateRec === this.systemDate)
+                console.log(dateRec.getTime())
+                console.log(this.systemDate.getTime())
+                if(dateRec.getTime() === this.systemDate.getTime())
                     NotificationCenter.notifyObservers(activity, 'recordatorio');
 
             })
