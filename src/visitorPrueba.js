@@ -55,8 +55,8 @@ class ReminderVisitor {
             activity.recordatorios.map((rec)=>{
                 
                 const dateRec = new Date(rec)
-                console.log(dateRec.getTime())
-                console.log(this.systemDate.getTime())
+                console.log(dateRec)
+                console.log(this.systemDate)
                 if(dateRec.getTime() === this.systemDate.getTime())
                     NotificationCenter.notifyObservers(activity, 'recordatorio');
 
