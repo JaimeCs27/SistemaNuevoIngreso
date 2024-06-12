@@ -6,6 +6,8 @@ import userRoutes from "./routes/userRoutes.js";
 import AsistenteAdministrativoRoutes from "./routes/AsistenteAdministrativoRoutes.js";
 import ProfesorGuiaCoordinadorRoutes from "./routes/ProfesorGuiaCoordinadorRoutes.js";
 import cors from "cors";
+import { NotificationCenter, Student } from '../src/observer.js'
+
 const notificationCenter = new NotificationCenter();
 global.NotificationCenter = notificationCenter
 
@@ -16,7 +18,16 @@ app.use(express.json({limit: '16mb'}))
 app.use(express.json());
 
 //Middleware for handling CORS Policy
-app.use(cors());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Permitir solicitudes OPTIONS para todos los métodos
+  if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+  }
+  next();
+});
 
 
 app.get("/", (request, response) => {

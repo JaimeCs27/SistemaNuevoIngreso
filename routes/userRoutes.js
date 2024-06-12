@@ -4,10 +4,9 @@ import { Activity } from "../models/activityModel.js";
 import { student } from "../models/studentModel.js";
 import nodemailer from 'nodemailer'
 import { ActivityClass, PublishVisitor, ReminderVisitor } from '../src/visitorPrueba.js';
-import { NotificationCenter, Student } from '../src/observer.js'
 
-const notificationCenter = new NotificationCenter();
-global.NotificationCenter = notificationCenter
+
+
 const router = express.Router();
 
 router.post("/", async (req, res) => {
