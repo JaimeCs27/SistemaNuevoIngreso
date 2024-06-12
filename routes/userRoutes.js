@@ -1,6 +1,11 @@
 import express from "express";
 import { user } from "../models/userModel.js";
+import { Activity } from "../models/activityModel.js";
+import { student } from "../models/studentModel.js";
 import nodemailer from 'nodemailer'
+import { ActivityClass, PublishVisitor, ReminderVisitor } from '../src/visitorPrueba.js';
+import { NotificationCenter, Student } from '../src/observer.js'
+
 
 const router = express.Router();
 
@@ -85,6 +90,30 @@ router.post('/restore/:id', async (req, res) => {
 
 })
 
+router.post('/LoadData', async (req, res) =>{
+  const systemDate = new Date(req.body.fecha)
+  const list = await Activity.find({})
+  list.map((act) => {
+    const activityData = {
+        _id: act._id,
+        nombre: act.nombre,
+        estado: act.estado,
+        semana: act.semana,
+        tipo: act.tipo,
+        afiche: act.afiche,
+        fecha: act.fecha,
+        hora: act.hora,
+        recordatorios: act.recordatorios,
+    };
+    const activity = new ActivityClass(activityData)
+    const publishVisitor = new PublishVisitor(systemDate);
+    const reminderVisitor = new ReminderVisitor(systemDate);
+    activity.accept(publishVisitor);
+    activity.accept(reminderVisitor);
+  })  
+})
+
+
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
   user.findOne({ username: username }).then((user) => {
@@ -99,7 +128,21 @@ router.post("/login", (req, res) => {
         res.json({status: false, message: "Contraseña Incorrecta" });
       }
     } else {
-      res.json({ message: "Usuario no encontrado" });
+      student.findOne({email: username}).then((user)=>{
+        if (user) {
+          console.log("encontro usuario");
+          if (user.password === password) { //cmbiar esto
+            console.log("son iguales las contrasenas");
+            res.json({ status: true, message: "Usuario logeado", user: user });
+            
+          } else {
+            console.log("no son iguales las contrasenas");
+            res.json({status: false, message: "Contraseña Incorrecta" });
+          }
+        }else{
+          res.json({ message: "Usuario no encontrado" });
+        }
+      })
     }
   });
 });

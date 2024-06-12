@@ -34,6 +34,7 @@ const studentSchema = mongoose.Schema(
             type: String,
             required: true 
         },
+        buzon: []
     },
     {
         timestamps: true,
