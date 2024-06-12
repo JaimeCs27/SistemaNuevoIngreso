@@ -6,6 +6,8 @@ import userRoutes from "./routes/userRoutes.js";
 import AsistenteAdministrativoRoutes from "./routes/AsistenteAdministrativoRoutes.js";
 import ProfesorGuiaCoordinadorRoutes from "./routes/ProfesorGuiaCoordinadorRoutes.js";
 import cors from "cors";
+const notificationCenter = new NotificationCenter();
+global.NotificationCenter = notificationCenter
 
 const app = express();
 

@@ -1,6 +1,6 @@
 // visitor.js
 import { Activity } from "../models/activityModel.js";
-import { NotificationCenter } from "./observer.js";
+
 
 class ActivityClass {
     constructor(data) {
