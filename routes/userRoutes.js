@@ -91,6 +91,7 @@ router.post('/restore/:id', async (req, res) => {
 })
 
 router.post('/LoadData', async (req, res) =>{
+  console.log("load data")
   const systemDate = new Date(req.body.fecha)
   const list = await Activity.find({})
   list.map((act) => {
@@ -110,7 +111,8 @@ router.post('/LoadData', async (req, res) =>{
     const reminderVisitor = new ReminderVisitor(systemDate);
     activity.accept(publishVisitor);
     activity.accept(reminderVisitor);
-  })  
+  })
+  console.log("termino")
 })
 
 
