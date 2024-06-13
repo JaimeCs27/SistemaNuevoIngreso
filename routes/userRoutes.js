@@ -5,8 +5,6 @@ import { student } from "../models/studentModel.js";
 import nodemailer from 'nodemailer'
 import { ActivityClass, PublishVisitor, ReminderVisitor } from '../src/visitorPrueba.js';
 
-
-
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -104,6 +102,7 @@ router.post('/LoadData', async (req, res) =>{
           tipo: act.tipo,
           afiche: act.afiche,
           fecha: act.fecha,
+          fechaPublicacion: act.fechaPublicacion,
           hora: act.hora,
           recordatorios: act.recordatorios,
       };
@@ -120,6 +119,74 @@ router.post('/LoadData', async (req, res) =>{
   console.log("termino")
 })
 
+router.get("/NotiAlert/:id", async (req,res)=>{
+  const id = req.params.id
+  try {
+    student.findById(id).then((result)=>{
+      let buzon = result.buzon
+      let flag = false
+      buzon.map((n) =>{
+        if(!n.read)
+          flag = true
+      })
+      res.send(flag)
+    })
+    
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.get("/filterBuzon/:id", async (req,res)=>{
+  const id = req.params.id
+  const filter = req.query.filter
+  try {
+    student.findById(id).then((result)=>{
+      let buzon = result.buzon
+      let aux = []
+      console.log(filter)
+      if(filter === "Todos"){
+        return res.send(result.buzon)
+      }else if(filter === "Leído"){
+        buzon.map((n) =>{
+          if(n.read)
+            aux.push(n)
+        })
+      }else if(filter === "No leído"){
+        buzon.map((n) =>{
+          if(!n.read)
+            aux.push(n)
+        })
+      }
+      res.send(aux)
+    })
+    
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post("/uploadBuzon/:id", async (req, res)=>{
+  const id = req.params.id
+  try {
+    const result  = await student.findByIdAndUpdate(id, {
+      $set: {buzon: req.body.aux}
+    })
+    res.send(result.buzon)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.get("/buzon/:id", async (req, res)=>{
+  const id = req.params.id
+  try {
+    const result  = await student.findById(id)
+    res.send(result.buzon)
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -137,10 +204,10 @@ router.post("/login", (req, res) => {
     } else {
       student.findOne({email: username}).then((user)=>{
         if (user) {
-          console.log("encontro usuario");
-          if (user.password === password) { //cmbiar esto
+          console.log("encontro estudiante");
+          if (user.carne === password) { //cmbiar esto
             console.log("son iguales las contrasenas");
-            res.json({ status: true, message: "Usuario logeado", user: user });
+            res.json({ status: true, message: "student", user: user });
             
           } else {
             console.log("no son iguales las contrasenas");

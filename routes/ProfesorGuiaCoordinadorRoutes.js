@@ -15,6 +15,7 @@ router.post('/CrearActividad', async (req,response) => {
             semana: req.body.semana,
             tipo: req.body.tipo,
             afiche: req.body.afiche,
+            fechaPublicacion: req.body.fechaPublicacion,
             fecha: req.body.fecha,
             hora: req.body.hora,
             modalidad: req.body.modalidad,

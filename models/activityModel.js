@@ -24,6 +24,10 @@ const activitySchema = mongoose.Schema(
         type: String,
         required: false,
     },
+    fechaPublicacion: {
+      type: Date,
+      required: false,
+    },
     fecha: {
       type: Date,
       required: false,
