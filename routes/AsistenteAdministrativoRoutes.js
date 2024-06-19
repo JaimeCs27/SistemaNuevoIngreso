@@ -14,12 +14,7 @@ router.get("/ListaEstudiantes/:campus", async (req, res) => {
   const campus = req.params.campus;
   console.log(campus);
   try {
-    let result;
-    if (campus !== "Todos") {
-      result = await student.find({ campus: campus });
-    } else {
-      result = await student.find();
-    }
+    const result = await student.find({ campus: campus });
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -42,7 +37,6 @@ router.post("/subirArchivo", (req, res) => {
           email: element.Correo,
           phoneNumber: element.Telefono,
           campus: element.Campus,
-          password: element.Carne
         });
       }
     });
@@ -159,16 +153,7 @@ router.post("/DarDeBaja", async (req, res) => {
   const prof = await team.findOneAndDelete({
     "profesor.campus": req.body.campus,
   });
-
-  const profe = await user.findByIdAndUpdate(
-    prof.profesor.id,
-    {
-      $set: { isCoord: false },
-    },
-    { new: true }
-  );
-
-  if (profe) {
+  if (prof) {
     res.send("Success");
   } else {
     res.send("Not deleted");
@@ -215,7 +200,7 @@ router.post("/AgregarProfesor", async (req, res) => {
       }
     );
     acronim = "SC-";
-  } else if (req.body.campus === "San Jose") {
+  } else if (req.body.campus === "San José") {
     number = listOfConsecutive[0].sanjose;
     await consecutive.findOneAndUpdate(
       {},
