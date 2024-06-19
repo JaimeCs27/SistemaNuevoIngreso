@@ -20,7 +20,7 @@ class NotificationCenter {
             author: "Sistema",
             read: false,
             message: message,
-            date: new Date().toLocaleDateString(),
+            date: systemDate.toLocaleDateString(),
             hour: `${new Date().getHours()}:${new Date().getMinutes()}`,
         }
         const result = await student.updateMany({}, {
