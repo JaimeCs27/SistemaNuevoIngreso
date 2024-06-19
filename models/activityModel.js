@@ -60,6 +60,14 @@ const activitySchema = mongoose.Schema(
       type: [String],
       require: false,
     },
+    justificacion: {
+      type:String,
+      required: false
+    },
+    fechaCancelacion:{
+      type:Date,
+      required: false
+    },
     comentarios : [
       {
         comentario: {

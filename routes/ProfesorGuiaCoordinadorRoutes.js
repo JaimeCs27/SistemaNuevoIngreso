@@ -107,10 +107,16 @@ router.post('/ComentarActividad/:id', async (req, res)=>{
 router.post('/ModificarActividad/:id', async (req,response) => {
     const id = req.params.id
     try{
+        if(req.body.estadoA === "Cancelada"){
+            await Activity.findByIdAndUpdate(id,{
+                $set: {fechaCancelacion: new Date()}
+            })
+        }
         const result = await Activity.findByIdAndUpdate(id,{
             $set: {
                 nombre: req.body.nombreActividad,
-                estado: req.body.estado,
+                estado: req.body.estadoA,
+                justificacion: req.body.justificacion,
                 semana: req.body.semana,
                 tipo: req.body.tipo,
                 afiche: req.body.afiche,

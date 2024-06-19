@@ -28,14 +28,9 @@ class PublishVisitor {
     }
 
     async visit(activity) {
-        console.log("publish")
-        console.log(activity.nombre)
         const published = new Date(activity.fechaPublicacion)
-        console.log(published)
-        console.log(this.systemDate)
-        console.log(this.systemDate >= published && activity.estado !== 'Publicada')
         // Lógica para determinar si la actividad debe publicarse
-        if (this.systemDate >= published && activity.estado !== 'Publicada') {
+        if (this.systemDate >= published && activity.estado !== 'Publicada' && activity.estado !== 'Cancelada') {
             
             const result = await Activity.findOneAndUpdate({_id: activity._id}, {
                 $set : {estado: "Notificada"}
@@ -43,6 +38,19 @@ class PublishVisitor {
             console.log(`Actividad ${result.nombre} ha sido publicada.`);
             // Llamar al centro de notificaciones
             NotificationCenter.notifyObservers(result, 'publicacion', this.systemDate);
+        }
+    }
+}
+
+class CancelVisitor {
+    constructor(systemDate) {
+        this.systemDate = systemDate;
+    }
+
+    async visit(activity) {
+        if (activity.estado === 'Cancelada') {
+            // Llamar al centro de notificaciones
+            NotificationCenter.notifyObservers(activity, 'cancelacion', this.systemDate);
         }
     }
 }
@@ -74,4 +82,4 @@ class ReminderVisitor {
 }
 
 // Exportar las clases
-export { ActivityClass, PublishVisitor, ReminderVisitor };
+export { ActivityClass, PublishVisitor, ReminderVisitor, CancelVisitor };

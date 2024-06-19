@@ -34,6 +34,14 @@ const studentSchema = mongoose.Schema(
             type: String,
             required: true 
         },
+        profilePic: {
+            type: String,
+            required: false
+        },
+        password: {
+            type:String,
+            required: true,
+        },
         buzon: []
     },
     {

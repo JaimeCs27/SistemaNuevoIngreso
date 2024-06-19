@@ -42,6 +42,7 @@ router.post("/subirArchivo", (req, res) => {
           email: element.Correo,
           phoneNumber: element.Telefono,
           campus: element.Campus,
+          password: element.Carne
         });
       }
     });

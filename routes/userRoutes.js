@@ -3,7 +3,7 @@ import { user } from "../models/userModel.js";
 import { Activity } from "../models/activityModel.js";
 import { student } from "../models/studentModel.js";
 import nodemailer from 'nodemailer'
-import { ActivityClass, PublishVisitor, ReminderVisitor } from '../src/visitorPrueba.js';
+import { ActivityClass, PublishVisitor, ReminderVisitor, CancelVisitor } from '../src/visitorPrueba.js';
 
 const router = express.Router();
 
@@ -109,8 +109,10 @@ router.post('/LoadData', async (req, res) =>{
       const activity = new ActivityClass(activityData)
       const publishVisitor = new PublishVisitor(systemDate);
       const reminderVisitor = new ReminderVisitor(systemDate);
+      const cancelVisitor = new CancelVisitor(systemDate);
       activity.accept(publishVisitor);
       activity.accept(reminderVisitor);
+      activity.accept(cancelVisitor);
     })
     
   } catch (error) {
@@ -132,6 +134,50 @@ router.get("/NotiAlert/:id", async (req,res)=>{
       res.send(flag)
     })
     
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post('/ChangePass/:id', async (req,res)=>{
+  const id = req.params.id
+  const {contrasenaActual, contrasenaNueva} = req.body
+  try {
+    const result = await student.findById(id)
+    console.log(contrasenaActual)
+    console.log(result.password)
+    if(result.password !== contrasenaActual){
+      console.log("incorrecta")
+      return res.send({message: "Actual Incorrecta"})
+    }
+    await student.findByIdAndUpdate(id, {
+      $set: {password: contrasenaNueva} 
+    })
+    return res.send({message: ""})
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post('/EditarEstudiante/:id', async (req, res)=>{
+  const {profilePic, phoneNumber} = req.body
+  const id = req.params.id
+  try {
+    const result = await student.findByIdAndUpdate(id, {
+      $set: {phoneNumber: phoneNumber, profilePic: profilePic},
+    }, {new: true})
+    res.send(result)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.get('/perfil/:id', async (req, res)=>{
+  let result;
+  const id = req.params.id
+  try {
+    result = await student.findById(id)
+    return res.send(result)
   } catch (error) {
     console.log(error)
   }
@@ -205,11 +251,13 @@ router.post("/login", (req, res) => {
       student.findOne({email: username}).then((user)=>{
         if (user) {
           console.log("encontro estudiante");
-          if (user.carne === password) { //cmbiar esto
+          if (user.password === password) { //cmbiar esto
             console.log("son iguales las contrasenas");
             res.json({ status: true, message: "student", user: user });
             
           } else {
+            console.log(user.password)
+            console.log(password)
             console.log("no son iguales las contrasenas");
             res.json({status: false, message: "Contraseña Incorrecta" });
           }

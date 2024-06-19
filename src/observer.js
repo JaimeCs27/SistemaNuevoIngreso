@@ -26,7 +26,6 @@ class NotificationCenter {
         const result = await student.updateMany({}, {
             $push: {buzon: email}
         }, {new: true})
-        console.log(result)
         this.observers.forEach(observer => observer.update(message));
     }
 
@@ -37,6 +36,8 @@ class NotificationCenter {
             const days = activity.fecha.getTime() - systemDate.getTime();
             const daysLeft = Math.ceil(days / (1000 * 60 * 60 * 24));
             return `Recordatorio: La actividad ${activity.nombre} es en ${daysLeft} dias.`;
+        } else if(messageType === 'cancelacion'){
+            return `Anuncio Importante: La actividad ${activity.nombre} ha sido cancelada`
         }
         return '';
     }

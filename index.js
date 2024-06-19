@@ -9,10 +9,6 @@ import cors from "cors";
 import { NotificationCenter, Student } from './src/observer.js'
 
 const notificationCenter = new NotificationCenter();
-const student1 = new Student('Estudiante 1');
-const student2 = new Student('Estudiante 2');
-notificationCenter.addObserver(student1);
-notificationCenter.addObserver(student2);
 global.NotificationCenter = notificationCenter
 
 const app = express();
