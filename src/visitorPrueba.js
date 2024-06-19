@@ -30,7 +30,7 @@ class PublishVisitor {
     async visit(activity) {
         const published = new Date(activity.fechaPublicacion)
         // Lógica para determinar si la actividad debe publicarse
-        if (this.systemDate >= published && activity.estado !== 'Publicada' && activity.estado !== 'Cancelada') {
+        if (this.systemDate >= published && activity.estado !== 'Notificada' && activity.estado !== 'Cancelada') {
             
             const result = await Activity.findOneAndUpdate({_id: activity._id}, {
                 $set : {estado: "Notificada"}
